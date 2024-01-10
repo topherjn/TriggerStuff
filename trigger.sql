@@ -26,6 +26,8 @@ AFTER INSERT ON orderdetails
    
    END IF; 
    
+   UPDATE orders SET `status` = newStatus WHERE ordernumber = NEW.ordernumber;
+   
  END$$
  
  DELIMITER ;
