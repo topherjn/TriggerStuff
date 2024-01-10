@@ -5,14 +5,10 @@ AFTER INSERT ON orderdetails
    FOR EACH ROW 
       BEGIN  
       DECLARE curqty INT;   
-      DECLARE newStatus VARCHAR(15);
       
       SET curqty = (SELECT quantityInStock       
-				    FROM orderdetails od                    
-					INNER JOIN products p               
-					ON od.productCode = p.productCode                
-					WHERE ordernumber = NEW.ordernumber            
-					AND p.productCode = NEW.productcode); 
+				    FROM products
+                    WHERE productCode = NEW.productCode);
                     
    IF curqty - NEW.quantityordered < 0 THEN   
 	   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Stock cannot be negative'; 
