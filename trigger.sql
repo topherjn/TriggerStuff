@@ -5,32 +5,24 @@ AFTER INSERT ON orderdetails
    FOR EACH ROW 
       BEGIN  
       DECLARE curqty INT;   
-      
+
+      -- retrieve current QOH into a variable
       SET curqty = (SELECT quantityInStock       
 				    FROM products
                     WHERE productCode = NEW.productCode);
                     
-   IF curqty - NEW.quantityordered < 0 THEN   
+   -- if the qty ordered is too much
+   -- yell at user.  
+   IF curqty - NEW.quantityordered < 0 THEN
 	   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Stock cannot be negative'; 
-   ELSE
+   ELSE -- not too much ordered so decrement product QOH by qty ordered
 	   UPDATE products 
-		SET
+	   SET
 			quantityinstock = quantityinstock - new.quantityordered
-		WHERE productcode = NEW.productcode;
+	   WHERE productcode = NEW.productcode;
    
    END IF; 
    
  END$$
  
  DELIMITER ;
-
-
-insert into orders values (10427,curdate(),curdate(),curdate(), 'Shipped','blah',103);
-insert into orderdetails values(10427, 'S10_1678', 10000000, 100.0, 1);
--- insert into orders values (10426,curdate(),curdate(),curdate(), 'Shipped','blah',103);
--- insert into orderdetails values(10426, 'S10_1678', 10000000, 100.0, 1);
--- delete from orderdetails where ordernumber = 10426;
--- insert into orderdetails values(10426, 'S10_1678', 101, 100.0, 1);
--- insert into orderdetails values(10426, 'S10_1678', 5, 100.0, 1);
--- delete from orderdetails where ordernumber = 10426;
--- delete from orders where ordernumber = 10426;
