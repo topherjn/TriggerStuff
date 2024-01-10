@@ -6,7 +6,7 @@ AFTER INSERT ON orderdetails
       BEGIN  
       DECLARE curqty INT;   
       DECLARE newStatus VARCHAR(15);
-      SET newStatus = 'In Process';
+      
       SET curqty = (SELECT quantityInStock       
 				    FROM orderdetails od                    
 					INNER JOIN products p               
@@ -15,7 +15,6 @@ AFTER INSERT ON orderdetails
 					AND p.productCode = NEW.productcode); 
                     
    IF curqty - NEW.quantityordered < 0 THEN   
-	   SET newStatus = 'Cancelled';
 	   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Stock cannot be negative'; 
    ELSE
 	   UPDATE products 
