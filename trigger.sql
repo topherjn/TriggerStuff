@@ -6,7 +6,7 @@ AFTER INSERT ON orderdetails
       BEGIN  
       DECLARE curqty INT;   
       DECLARE newStatus VARCHAR(15);
-      SET newStatus = 'In Progress';
+      SET newStatus = 'In Process';
       
       -- retrieve current QOH into a variable
       SET curqty = (SELECT quantityInStock       
@@ -18,8 +18,7 @@ AFTER INSERT ON orderdetails
    IF curqty - NEW.quantityordered < 0 THEN
 	   SET newStatus = 'Rejected';
    ELSE -- not too much ordered so decrement product QOH by qty ordered
-	   SET newStatus = 'In Progress';
-       
+	   
        UPDATE products 
 	   SET
 			quantityinstock = quantityinstock - new.quantityordered
