@@ -99,4 +99,28 @@ select * from products where productcode = 'S10_1678';
 -- 2. Delete the "log_changes" trigger when it is no longer needed.
 -- 3. Observe the behavior of the database after the trigger is deleted and confirm that the logging action is no longer triggered.
 
+CREATE TRIGGER `log_changes` 
+AFTER UPDATE ON `orders` 
 
+FOR EACH ROW BEGIN  
+      
+      INSERT INTO orderslog (orderNumber, 
+                            orderDate,
+                            requiredDate,
+                            shippedDate,
+                            `status`,
+                            comments,
+                            customerNumber)
+      SELECT ordernumber, 
+             orderdate, 
+             requireddate, 
+             shippeddate, 
+             `status`, 
+             comments, 
+             customerNumber
+      FROM orders
+      WHERE orderNumber = NEW.orderNumber;
+     
+      END
+
+DROP TRIGGER `log_changes`;

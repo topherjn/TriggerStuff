@@ -13,6 +13,22 @@
 -- delete from orderslog;
 -- added timestamp column changedTime with GUI
 
+-- Table
+CREATE TABLE `orderslog` (
+  `changeID` int NOT NULL AUTO_INCREMENT,
+  `orderNumber` int NOT NULL,
+  `orderDate` date NOT NULL,
+  `requiredDate` date NOT NULL,
+  `shippedDate` date DEFAULT NULL,
+  `status` varchar(15) NOT NULL,
+  `comments` text,
+  `customerNumber` int NOT NULL,
+  `changeTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`changeID`)
+) ;
+
+-- To-do referential integrity, though is it really needed?
+
 -- Trigger
 CREATE TRIGGER `log_changes` 
 AFTER UPDATE ON `orders` 
