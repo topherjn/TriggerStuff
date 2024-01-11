@@ -85,7 +85,7 @@ AFTER INSERT ON orderdetails
  
  DELIMITER ;
  
-  
+-- some testing commands
 insert into orders values (@nextordernum,curdate(),curdate(),curdate(), 'Shipped','reject this',103);
 insert into orderdetails values(@nextordernum, 'S10_1678', 1000000, 100.0, 1);
 
@@ -99,6 +99,36 @@ select * from products where productcode = 'S10_1678';
 -- 2. Delete the "log_changes" trigger when it is no longer needed.
 -- 3. Observe the behavior of the database after the trigger is deleted and confirm that the logging action is no longer triggered.
 
+-- drop table orderslog;
+-- create table orderslog as
+-- select * from orders;
+
+-- alter table to  have distinct rows
+-- alter table orderslog
+-- add column changeID INT primary key auto_increment;
+-- alter table orderslog
+-- add foreign key (ordernumber) references orders(ordernumber);
+-- delete from orderslog;
+-- added timestamp column changedTime with GUI
+
+-- Table
+CREATE TABLE `orderslog` (
+  `changeID` int NOT NULL AUTO_INCREMENT,
+  `orderNumber` int NOT NULL,
+  `orderDate` date NOT NULL,
+  `requiredDate` date NOT NULL,
+  `shippedDate` date DEFAULT NULL,
+  `status` varchar(15) NOT NULL,
+  `comments` text,
+  `customerNumber` int NOT NULL,
+  `changeTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`changeID`)
+) ;
+
+-- To-do referential integrity, though is it really needed?
+
+
+DELIMITER $$
 CREATE TRIGGER `log_changes` 
 AFTER UPDATE ON `orders` 
 
@@ -121,6 +151,18 @@ FOR EACH ROW BEGIN
       FROM orders
       WHERE orderNumber = NEW.orderNumber;
      
-      END
+      END$$
+      
+DELIMITER ;
 
 DROP TRIGGER `log_changes`;
+
+-- some more testing
+SET @nextordernum = (select max(ordernumber) + 1 from orders);
+ 
+insert into orders values (@nextordernum,curdate(),curdate(),curdate(), 'Shipped','reject this',103);
+insert into orderdetails values(@nextordernum, 'S10_1678', 1000000, 100.0, 1);
+
+select * from orders where ordernumber	= @nextordernum;
+select * from products where productcode = 'S10_1678';
+-- select * from orderdetails where ordernumber = @nextordernum;
