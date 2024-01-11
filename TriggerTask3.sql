@@ -14,7 +14,7 @@
 -- added timestamp column changedTime with GUI
 
 -- Trigger
-DROP TRIGGER IF EXISTS log_changes;
+drop trigger if exists log_changes;
 delimiter $$
 CREATE TRIGGER log_changes 
 AFTER INSERT ON orders 
