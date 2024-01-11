@@ -99,3 +99,4 @@ select * from products where productcode = 'S10_1678';
 -- 2. Delete the "log_changes" trigger when it is no longer needed.
 -- 3. Observe the behavior of the database after the trigger is deleted and confirm that the logging action is no longer triggered.
 
+
