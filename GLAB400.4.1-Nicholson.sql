@@ -37,7 +37,7 @@ AFTER INSERT ON orderdetails
  
  DELIMITER ;
 
--- To-Dos - 2
+-- To-Dos - 2 (NOT SURE WHAT TO DO WITH THIS ONE)
 -- 1. Modify the "update_stock" trigger to also enforce a maximum stock level of 100 for products.
 DELIMITER $$
 DROP TRIGGER update_stock;
