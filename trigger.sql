@@ -5,8 +5,8 @@ AFTER INSERT ON orderdetails
    FOR EACH ROW 
       BEGIN  
       DECLARE curqty INT;   
-      
-      UPDATE orders SET `status` = 'Rejected' WHERE ordernumber = NEW.ordernumber;
+      DECLARE newStatus VARCHAR(15);
+      SET newStatus = 'In Progress';
       
       -- retrieve current QOH into a variable
       SET curqty = (SELECT quantityInStock       
@@ -16,18 +16,18 @@ AFTER INSERT ON orderdetails
    -- if the qty ordered is too much
    -- yell at user.  
    IF curqty - NEW.quantityordered < 0 THEN
-	   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Stock cannot be negative'; 
+	   SET newStatus = 'Rejected';
    ELSE -- not too much ordered so decrement product QOH by qty ordered
-	   UPDATE products 
+	   SET newStatus = 'In Progress';
+       
+       UPDATE products 
 	   SET
 			quantityinstock = quantityinstock - new.quantityordered
 	   WHERE productcode = NEW.productcode;
-       
-       UPDATE orders SET `status` = 'In Progress' WHERE ordernumber = NEW.ordernumber;
-   
+
    END IF; 
    
-   
+   UPDATE orders SET `status` = newStatus WHERE ordernumber = NEW.ordernumber;
    
  END$$
  
