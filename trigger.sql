@@ -16,7 +16,7 @@ AFTER INSERT ON orderdetails
                     
    -- if the qty ordered is too much
    -- yell at user.  
-   IF curqty - NEW.quantityordered < 0 OR NEW.quantityordered >100 THEN
+   IF curqty - NEW.quantityordered < 0 THEN
 
 	   SET newStatus = 'Rejected';
 
