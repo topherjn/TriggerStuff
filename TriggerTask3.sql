@@ -14,12 +14,7 @@
 -- added timestamp column changedTime with GUI
 
 -- Trigger
-drop trigger if exists log_changes;
-delimiter $$
-CREATE TRIGGER log_changes 
-AFTER INSERT ON orders 
-   FOR EACH ROW 
-      BEGIN  
+CREATE DEFINER=`root`@`localhost` TRIGGER `log_changes` AFTER UPDATE ON `orders` FOR EACH ROW BEGIN  
       
       INSERT INTO orderslog (orderNumber, 
                             orderDate,
@@ -35,8 +30,7 @@ AFTER INSERT ON orders
              `status`, 
              comments, 
              customerNumber
-      FROM orders;
+      FROM orders
+      WHERE orderNumber = NEW.orderNumber;
      
-      END$$
- 
- DELIMITER ;
+      END
